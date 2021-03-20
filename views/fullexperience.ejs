@@ -1,0 +1,27 @@
+<%- include('partials/header'); -%>
+<h2><a href="/interviews" class="btn">Interview Experiences</a></h2>
+<h2 style="text-align: center; color: rgb(16, 95, 197);">
+    <a href="/interviews/<%= companyname %>" class="btn">
+        <%= companyname[0].toUpperCase() +  companyname.substring(1)%>
+    </a>
+</h2>
+
+<div class="fullexpmain">
+    <div class="fullexp">
+        <img src="data:image/<%=experience.image.contentType%>;base64,
+        <%=experience.image.data.toString('base64')%>" alt="<%= experience.personname %>" style="width:100%" class="img">
+        <div class="container">
+            <h2><%= experience.personname %></h2>
+            <p class="title"><%= experience.branch %></p>
+            <p><%= experience.year %></p>
+        </div>
+    </div>
+    <p style="white-space: pre-wrap; margin-top: 20px; margin-left: 30px;"><%=experience.exp%></p>
+</div>
+
+
+
+
+
+<%- include('partials/footer'); -%>
+

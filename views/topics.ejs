@@ -1,0 +1,111 @@
+<%- include('partials/header'); -%>
+<h2>Topics</h2>
+<ul class="topics">
+  <% for(var i = 0; i < topicArray.length; i++){ %>
+    <li class="topic">
+      <img src="http://localhost:3000/topic/<%=  encodeURI(topicArray[i].name) %>.jpg" style="width:100%" class="img">
+      <a href="/topics/<%= topicArray[i].name %>" class="btn"><%= topicArray[i].name %></a>
+    </li>
+  <% } %>
+</ul>
+
+<p>If you want to contribute by suggesting good question</p>
+
+<button id="myBtn">Add Question</button>
+
+<!-- The Modal -->
+<div id="myModal" class="modal">
+
+  <!-- Modal content -->
+    <form class="form-container">
+      <span class="close">&times;</span>
+      <label for="name">Question name</label>
+      <input type="text" name="name" required/>
+      <div class="name error"></div>
+      <label for="link">link for the question</label>
+      <input type="text" name="link"  required/>
+      <div class="link error"></div>
+      <label for="topicname">topicname</label>
+      <select id="topics" name="topicname">
+        <option value="none" selected disabled hidden>Select an Topic </option> 
+        <% for(var i = 0; i < topicArray.length; i++){ %>
+          <option value="<%= topicArray[i].name %>"><%= topicArray[i].name %></option>
+        <% } %>
+      </select>
+      <div class="topicname error"></div>
+      <button class="btn contribute">Suggest</button>
+    </form>
+
+</div>
+
+<script>
+  const form = document.querySelector('form');
+  const nameError = document.querySelector('.name.error');
+  const linkError = document.querySelector('.link.error');
+  const topicnameError = document.querySelector('.topicname.error');
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    // reset errors
+    nameError.textContent = '';
+    linkError.textContent = '';
+    topicnameError.textContent = '';
+
+    // get values
+    const name = form.name.value;
+    const link = form.link.value;
+    const topicname = form.topicname.value;
+
+    try {
+      const res = await fetch('/questions', { 
+        method: 'POST', 
+        body: JSON.stringify({ name, link, topicname }),
+        headers: {'Content-Type': 'application/json'}
+      });
+      const data = await res.json();
+      console.log(data);
+      if (data.errors) {
+        nameError.textContent = data.errors.name;
+        linkError.textContent = data.errors.link;
+        topicnameError.textContent = data.errors.topicname;
+      }
+      if (data.userquestion) {
+        location.assign('/topics');
+      }
+
+    }
+    catch (err) {
+      console.log(err);
+    }
+  });
+</script>
+
+<script>
+  // Get the modal
+  var modal = document.getElementById("myModal");
+  
+  // Get the button that opens the modal
+  var btn = document.getElementById("myBtn");
+  
+  // Get the <span> element that closes the modal
+  var span = document.getElementsByClassName("close")[0];
+  
+  // When the user clicks the button, open the modal 
+  btn.onclick = function() {
+    modal.style.display = "block";
+  }
+  
+  // When the user clicks on <span> (x), close the modal
+  span.onclick = function() {
+    modal.style.display = "none";
+  }
+  
+  // When the user clicks anywhere outside of the modal, close it
+  window.onclick = function(event) {
+    if (event.target == modal) {
+      modal.style.display = "none";
+    }
+  }
+  </script>
+<%- include('partials/footer'); -%>

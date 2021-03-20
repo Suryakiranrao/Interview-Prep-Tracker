@@ -1,0 +1,14 @@
+<%- include('partials/header'); -%>
+<h2><a href="/topics" class="btn">Topics</a></h2>
+<ul class="questions">
+    <% for(var i = 0; i < questionArray.length; i++){ %>
+        <li class="question">
+          <a href= "<%= questionArray[i].link %>" class="tooltip" target="_blank">
+            <%= questionArray[i].name %>
+            <span class="tooltiptext"><%= questionArray[i].link %></span>
+          </a>
+        </li>
+    <% } %>
+</ul>
+
+<%- include('partials/footer'); -%>

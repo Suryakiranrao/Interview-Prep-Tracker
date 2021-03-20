@@ -1,0 +1,76 @@
+<%- include('partials/header'); -%>
+
+<div class="backgrd reset">
+  <form action="/reset">
+    <h2>Reset Password</h2>
+    <label for="email">Email</label>
+    <input type="text" name="email" required />
+    <div class="email error"></div>
+    <label for="password"> New Password</label>
+    <input type="password" name="password" required />
+    <div class="password error"></div>
+    <label for="repassword">Retype Password</label>
+    <input type="password" name="repassword" required />
+    <div class="repassword error"></div>
+    <button>Reset</button>
+    <div class = "resetalt">
+      <p display= "inline-block" class="sameline">Already an user?</p>
+      <a href="/login" class="btn sameline alt">Login</a><br>
+    </div>
+    <div class = "resetalt">
+      <p display= "inline-block" class="sameline">new user?</p>
+      <a href="/signup" class="btn sameline alt">Sign up</a><br>
+    </div>
+  </form>
+
+  
+</div>
+
+
+
+<script>
+  const form = document.querySelector('form');
+  const emailError = document.querySelector('.email.error');
+  const passwordError = document.querySelector('.password.error');
+  const repasswordError = document.querySelector('.repassword.error');
+  
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    // reset errors
+    emailError.textContent = '';
+    passwordError.textContent = '';
+    repasswordError.textContent = '';
+    
+
+    // get values
+    const email = form.email.value;
+    const password = form.password.value;
+    const repassword = form.repassword.value;
+
+    try {
+        const res = await fetch('/reset', { 
+        method: 'POST', 
+        body: JSON.stringify({ email, password, repassword}),
+        headers: {'Content-Type': 'application/json'}
+    });
+        const data = await res.json();
+        console.log(data);
+        if (data.errors) {
+            emailError.textContent = data.errors.email;
+            passwordError.textContent = data.errors.password;
+            repasswordError.textContent = data.errors.repassword;
+        }
+        if (data.user) {
+            location.assign('/');
+            alert("Password changed sucessfully!!");
+        }
+    }
+    catch (err) {
+      console.log(err);
+    }
+  });
+</script>
+
+<%- include('partials/footer'); -%>

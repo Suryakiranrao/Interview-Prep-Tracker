@@ -1,0 +1,158 @@
+<%- include('partials/header'); -%>
+
+<h2>Interview Experiences</h2>
+<ul class="companies">
+  <% for(var i = 0; i < companies.length; i++){ %>
+    <li class="company">
+      <a href="/interviews/<%= companies[i].name %>">
+        <img src="http://localhost:3000/company/<%=  encodeURI(companies[i].name) %>.jpg" style="width:100%" class="img company">
+      </a>
+    </li>
+  <% } %>
+</ul>
+
+<button id="myBtn">Add Ur Experience</button>
+
+<!-- The Modal -->
+<div id="myModal" class="modal">
+
+  <!-- Modal content -->
+  <!-- action="/interviews" method="POST" enctype="multipart/form-data" -->
+  <form  id="myForm" class="form-container experience">
+    <span class="close">&times;</span>
+    <label for="personname">Your Name*</label>
+    <input type="text" name="personname"/>
+    <div class="personname error"></div>
+    <div>
+      <label for="image">Upload Image</label>
+      <input type="file" id="image" name="image" value="">
+    </div>
+    <label for="branch">Your Branch*</label>
+    <input type="text" name="branch"/>
+    <div class="branch error"></div>
+    <label for="year">year of ur interview*</label>
+    <input type="number" name="year"/>
+    <div class="year error"></div>
+    <label for="companyname">companyname</label>
+    <select id="companies" name="companyname">
+      <option value="none" selected disabled hidden>Select an Company </option> 
+      <% for(var i = 0; i < companies.length; i++){ %>
+        <option value="<%= companies[i].name %>"><%= companies[i].name %></option>
+      <% } %>
+    </select>
+    <div class="companyname error"></div>
+    <div class="js-stacks-validation">
+      <div class="ps-relative">
+        <label for="post-text">Experience</label>
+        <textarea id="myexperience" name="post-text" class="wmd-input s-input bar0 js-post-body-field processed" data-post-type-id="2" 
+        cols="92" rows="15" tabindex="101" data-min-length="" spellcheck="false"></textarea>
+        <div class="grippie bbr-sm" style="margin-right: 0px;"></div>
+      </div>
+      <div class="experience error"></div>
+    </div>
+    <button type="submit" class="btn contribute">Post ur experience</button>
+  </form>  
+
+</div>
+
+
+
+<script>
+  const form = document.querySelector('form');
+  const personnameError = document.querySelector('.personname.error');
+  const branchError = document.querySelector('.branch.error');
+  const yearError = document.querySelector('.year.error');
+  const companynameError = document.querySelector('.companyname.error');
+  const experienceError = document.querySelector('.experience.error');
+  
+  
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    // reset errors
+    personnameError.textContent = '';
+    branchError.textContent = '';
+    yearError.textContent = '';
+    companynameError.textContent = '';
+    experienceError.textContent = '';
+    //console.log(document.getElementById("myForm"));
+    
+    // get values
+    const personname = form.personname.value;
+    var image = form.image.value;
+    //console.log(image);
+    const branch = form.branch.value;
+    const year = form.year.value;
+    const companyname = form.companyname.value;
+    const exp = document.getElementById("myexperience").value;
+    /*if(img==""{
+      img = 'https://www.tenforums.com/geek/gars/images/2/types/thumb_15951118880user.png';
+    }*/
+    const input = document.querySelector('input[type="file"]')
+
+    const formdata = new FormData();
+    formdata.append('file', input.files[0]);
+    formdata.append('personname', personname);
+    formdata.append('branch', branch);
+    formdata.append('year', year);
+    formdata.append('companyname', companyname);
+    formdata.append('exp', exp);
+    console.log(formdata);
+    try {
+      console.log("i am sending post req");
+      const res = await fetch('/interviews', { 
+        method: 'POST', 
+        body: formdata
+        //headers: {'Content-Type': 'application/json'}
+      });
+      console.log("i got res");
+      const data = await res.json();
+      console.log(data);
+      if (data.errors) {
+        personnameError.textContent = data.errors.personname;
+        branchError.textContent = data.errors.branch;
+        yearError.textContent = data.errors.year;
+        companynameError.textContent = data.errors.companyname;
+        experienceError.textContent = data.errors.exp;
+      }
+      if (data.userExperience) {
+        location.assign('/interviews');
+      }
+
+    }
+    catch (err) {
+      console.log(err);
+    }
+
+  });
+</script>
+
+<script>
+  // Get the modal
+  var modal = document.getElementById("myModal");
+  
+  // Get the button that opens the modal
+  var btn = document.getElementById("myBtn");
+  
+  // Get the <span> element that closes the modal
+  var span = document.getElementsByClassName("close")[0];
+  
+  // When the user clicks the button, open the modal 
+  btn.onclick = function() {
+    modal.style.display = "block";
+  }
+  
+  // When the user clicks on <span> (x), close the modal
+  span.onclick = function() {
+    modal.style.display = "none";
+  }
+  
+  // When the user clicks anywhere outside of the modal, close it
+  window.onclick = function(event) {
+    if (event.target == modal) {
+      modal.style.display = "none";
+    }
+  }
+  </script>
+
+<%- include('partials/footer'); -%>

@@ -1,0 +1,26 @@
+<%- include('partials/header'); -%>
+<h2><a href="/interviews" class="btn">Interview Experiences</a></h2>
+<h2 style="text-align: center; color: rgb(70, 73, 73);"><%= companyname[0].toUpperCase() +  companyname.substring(1)%></h2>
+<div class="row">
+  <% for(var i = 0; i < experiences.length; i++){ %>
+    <div class="column">
+      <div class="card">
+        <img src="data:image/<%=experiences[i].image.contentType%>;base64,
+        <%=experiences[i].image.data.toString('base64')%>" alt="<%= experiences[i].personname %>" style="width:100%;" class="img">
+        <div class="container">
+          <h2><%= experiences[i].personname %></h2>
+          <p class="title"><%= experiences[i].branch %></p>
+          <p><%= experiences[i].year %></p>
+          <p style=" white-space: pre-wrap; overflow: auto; height: 160px;">
+            <%= experiences[i].exp.substring(0,70) %>
+            <a href="/interviews/<%= companyname %>/<%= experiences[i]._id %>" style="color: blue;">...Read More</a>
+          </p> 
+        </div>
+      </div>
+    </div>
+  <% } %>
+</div>
+
+
+<%- include('partials/footer'); -%>
+
